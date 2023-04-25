@@ -23,11 +23,6 @@ def euler_step(f,t,y,h):
 
 
 
-
-
-
-   
-
 def rk4_step(f, t, y, h):
     n = len(y)
     k1 = f(t, y)
@@ -38,7 +33,7 @@ def rk4_step(f, t, y, h):
     return y_next, k1, k2, k3, k4
 
 
-def solve_to(system, y0, t0, tn, deltat_max,tol,method):
+def solve_to(system, y0, t0, tn, deltat_max, tol, method):
     """Solve a first-order ODE using the Euler method with adaptive step size control.
     
     Parameters:
@@ -57,7 +52,6 @@ def solve_to(system, y0, t0, tn, deltat_max,tol,method):
     
     # Initialize the array of time values with the initial time
     t = [t0]
-    
     # Initialize the array of y values with the initial condition
     y = [y0]
     
@@ -92,33 +86,42 @@ def solve_to(system, y0, t0, tn, deltat_max,tol,method):
 
                 
     elif method == "RK4":
+        
 
         # Loop until t_end is reached
-        while t[-1] < tn:
+        while t[-1] <= tn:
             # If the next step exceeds t_end, reduce the step size
-            #if t[-1] + deltat > tn:
-             #   deltat = tn - t[-1]
+            if t[-1] + deltat > tn:
+                deltat = tn - t[-1]
 
             # Calculate the RK4 step with the current step size
+            #print(t)
             y_next, k1, k2, k3, k4 = rk4_step(system, t[-1], y[-1], deltat)
+            #print(k4)
 
             # Estimate the error using the difference between fourth and fifth order solutions
-            error = abs((k4 - y_next) / (k4 + tol))
+            error = max(abs((np.array(k4) - np.array(y_next)) / (np.array(k4) + 1e-4)))
+            #print(error)
 
             # If the error is smaller than the tolerance, accept the step and append the new time and y values to the arrays
-            if np.all(error < tol):
+            if error < tol * deltat:
+                print("YES")
                 t.append(t[-1] + deltat)
                 y.append(y_next)
             # Otherwise, reduce the step size and try again
             else:
-                deltat *= 0.8
-
-        # Append the new time and y values to the arrays
-        t.append(t[-1] + deltat)
-        y.append(y_next)
+                deltat = 0.8 * deltat
+                #print(deltat)
+                
+            
+            # Append the new time and y values to the arrays
+            t.append(t[-1] + deltat)
+            y.append(y_next)
+            print(t)
+            continue
         
     return t, y
 
 
-t,state = solve_to(system, [1,-1], 0, 5, 0.01, 0.1, 'Euler')
-#y_next, k1, k2, k3, k4 = rk4_step(system, 0,[1,1] , 0.1)
+t,state = solve_to(system, [1,-1], 0, 5, 0.1, 0.01, 'RK4')
+#y_next, k1, k2, k3, k4 = rk4_step(system, 0,[1,-2] , 0.1)
