@@ -34,7 +34,8 @@ def rk4_step(f, t, y, h):
 
 
 def solve_to(system, y0, t0, tn, deltat_max, tol, method):
-    """Solve a first-order ODE using the Euler method with adaptive step size control.
+    """Solve a system of ODEs using the Euler or 4th order Runge-Kutta method 
+    with adaptive step size control.
     
     Parameters:
         system: A function that defines the differential equations
@@ -123,5 +124,5 @@ def solve_to(system, y0, t0, tn, deltat_max, tol, method):
     return t, y
 
 
-t,state = solve_to(system, [1,-1], 0, 5, 0.1, 0.01, 'RK4')
+t,state = solve_to(system, [1,-1], 0, 5, 0.1, 0.01, 'Euler')
 #y_next, k1, k2, k3, k4 = rk4_step(system, 0,[1,-2] , 0.1)

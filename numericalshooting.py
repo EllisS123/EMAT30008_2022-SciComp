@@ -17,7 +17,7 @@ def boundary_diff(system, b, t0, y0, tn, h):
     return np.array(y[-1]) - np.array(b)
 
 def numerical_shooting(system, t0, y0, h, tn, b1, b2, tol=0.1, max_iter=100):
-    """Solve a first-order ODE using numerical shooting and root finding
+    """Solve a system of ODEs using numerical shooting and root finding
     
     Parameters:
         system: A function that defines the differential equations
